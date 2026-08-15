@@ -17,9 +17,10 @@ class Player:
         self.animation_timer = 0
 
         self.direction = "front"
+        self.facing_right = True
         self.moving = False
 
-        self.frame_duration = 120
+        self.frame_duration = 150
 
         sprite_sheet = pygame.image.load(
             "assets/player/bea_spritesheet.png"
@@ -132,7 +133,7 @@ class Player:
                     i * frame_width,
                     frame_height * 5 - 20,
                     frame_width,
-                    frame_height - 30
+                    frame_height - 20
                 )
             )
 
@@ -173,7 +174,7 @@ class Player:
 
         self.x = max(0, min(self.x, self.screen_width - 100))
         self.y = max(0, min(self.y, self.screen_height - 109))
-    
+
     def update(self, clock):
 
         self.move()
@@ -186,8 +187,6 @@ class Player:
 
                 self.animation_timer = 0
 
-                self.current_frame += 1
-
                 if self.direction == "front":
                     max_frames = len(self.walk_front)
 
@@ -196,6 +195,8 @@ class Player:
 
                 else:
                     max_frames = len(self.walk_back)
+
+                self.current_frame += 1
 
                 if self.current_frame >= max_frames:
                     self.current_frame = 0

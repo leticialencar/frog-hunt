@@ -13,6 +13,15 @@ pygame.display.set_caption("Frog Hunt!")
 
 clock = pygame.time.Clock()
 
+background = pygame.image.load(
+    "assets/background/background.png"
+).convert()
+
+background = pygame.transform.scale(
+    background,
+    (WIDTH, HEIGHT)
+)
+
 player = Player(100, 100, WIDTH, HEIGHT)
 
 running = True
@@ -26,7 +35,7 @@ while running:
 
     player.update(clock)
 
-    screen.fill((30, 30, 30))
+    screen.blit(background, (0, 0))
 
     player.draw(screen)
 
