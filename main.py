@@ -1,6 +1,7 @@
 import pygame
 
 from player import Player
+from frog import Frog
 
 
 pygame.init()
@@ -24,6 +25,8 @@ background = pygame.transform.scale(
 
 player = Player(100, 100, WIDTH, HEIGHT)
 
+frog = Frog(400, 300)
+
 running = True
 
 while running:
@@ -34,10 +37,12 @@ while running:
             running = False
 
     player.update(clock)
+    frog.update(clock)
 
     screen.blit(background, (0, 0))
 
     player.draw(screen)
+    frog.draw(screen)
 
     pygame.display.flip()
 
