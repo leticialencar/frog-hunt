@@ -13,7 +13,7 @@ pygame.display.set_caption("Frog Hunt!")
 
 clock = pygame.time.Clock()
 
-player = Player(100, 100)
+player = Player(100, 100, WIDTH, HEIGHT)
 
 running = True
 
