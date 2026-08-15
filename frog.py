@@ -1,4 +1,5 @@
 import pygame
+import random
 
 
 class Frog:
@@ -10,15 +11,32 @@ class Frog:
 
         self.scale = 0.18
 
-        self.current_frame = 0
+        self.idle_frame = 0
+        self.walk_frame = 0
+        self.action_frame = 0
+
         self.animation_timer = 0
 
-        self.frame_durations = [
+        self.direction = random.choice([-1, 1])
+        self.moving = False
+        self.action_playing = False
+
+        self.state_timer = 0
+        self.state_duration = random.randint(1000, 3000)
+
+        self.action_timer = random.randint(4000, 8000)
+
+        self.speed = 1
+
+        self.idle_frame_durations = [
             2000,
             500,
             800,
             1200
         ]
+
+        self.walk_frame_duration = 150
+        self.action_frame_duration = 150
 
         self.sprite_sheet = pygame.image.load(
             "assets/frog/frog_spritesheet.png"
@@ -99,21 +117,118 @@ class Frog:
 
     def update(self, clock):
 
-        self.animation_timer += clock.get_time()
+        delta_time = clock.get_time()
 
-        if self.animation_timer >= self.frame_durations[self.current_frame]:
+        if self.action_playing:
 
+            self.animation_timer += delta_time
+
+            if self.animation_timer >= self.action_frame_duration:
+
+                self.animation_timer = 0
+
+                self.action_frame += 1
+
+                if self.action_frame >= len(self.action):
+
+                    self.action_frame = 0
+                    self.action_playing = False
+                    self.action_timer = random.randint(4000, 8000)
+
+            return
+
+        self.action_timer -= delta_time
+
+        if self.action_timer <= 0:
+
+            self.action_playing = True
+            self.action_frame = 0
             self.animation_timer = 0
 
-            self.current_frame += 1
+            return
 
-            if self.current_frame >= len(self.idle):
+        self.state_timer += delta_time
 
-                self.current_frame = 0
+        if self.state_timer >= self.state_duration:
+
+            self.state_timer = 0
+
+            self.moving = not self.moving
+
+            self.state_duration = random.randint(1000, 3000)
+
+            if self.moving:
+
+                self.direction = random.choice([-1, 1])
+                self.walk_frame = 0
+
+            else:
+
+                self.idle_frame = 0
+
+        if self.moving:
+
+            self.x += self.speed * self.direction
+
+            if self.x <= 0:
+
+                self.x = 0
+                self.direction = 1
+
+            elif self.x >= 800 - 40:
+
+                self.x = 800 - 40
+                self.direction = -1
+
+            self.animation_timer += delta_time
+
+            if self.animation_timer >= self.walk_frame_duration:
+
+                self.animation_timer = 0
+
+                self.walk_frame += 1
+
+                if self.walk_frame >= len(self.walk):
+
+                    self.walk_frame = 0
+
+        else:
+
+            self.animation_timer += delta_time
+
+            if self.animation_timer >= self.idle_frame_durations[self.idle_frame]:
+
+                self.animation_timer = 0
+
+                self.idle_frame += 1
+
+                if self.idle_frame >= len(self.idle):
+
+                    self.idle_frame = 0
 
     def draw(self, screen):
 
+        if self.action_playing:
+
+            image = self.action[self.action_frame]
+
+        elif self.moving:
+
+            image = self.walk[self.walk_frame]
+
+            if self.direction == -1:
+
+                image = pygame.transform.flip(
+                    image,
+                    True,
+                    False
+                )
+
+        else:
+
+            image = self.idle[self.idle_frame]
+
         screen.blit(
-            self.idle[self.current_frame],
+            image,
             (self.x, self.y)
         )

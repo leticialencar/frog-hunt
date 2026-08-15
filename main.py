@@ -41,8 +41,8 @@ while running:
 
     screen.blit(background, (0, 0))
 
-    player.draw(screen)
     frog.draw(screen)
+    player.draw(screen)
 
     pygame.display.flip()
 
