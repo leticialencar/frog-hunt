@@ -8,12 +8,14 @@ class Player:
         self.x = x
         self.y = y
 
+        self.speed = 4
+
         self.current_frame = 0
         self.animation_timer = 0
 
         self.frame_durations = [
-            2000,  
-            700    
+            2000,
+            700
         ]
 
         sprite_sheet = pygame.image.load(
@@ -43,7 +45,28 @@ class Player:
 
             self.idle_front.append(frame)
 
+    def move(self):
+
+        keys = pygame.key.get_pressed()
+
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            self.x -= self.speed
+
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            self.x += self.speed
+
+        if keys[pygame.K_UP] or keys[pygame.K_w]:
+            self.y -= self.speed
+
+        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+            self.y += self.speed
+
+        self.x = max(0, min(self.x, 800 - 100))
+        self.y = max(0, min(self.y, 600 - 109))
+
     def update(self, clock):
+
+        self.move()
 
         self.animation_timer += clock.get_time()
 
@@ -55,7 +78,6 @@ class Player:
 
             if self.current_frame >= len(self.idle_front):
                 self.current_frame = 0
-
 
     def draw(self, screen):
 
