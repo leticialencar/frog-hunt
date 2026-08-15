@@ -1,5 +1,7 @@
 import pygame
 
+from player import Player
+
 pygame.init()
 
 WIDTH = 800
@@ -10,22 +12,26 @@ pygame.display.set_caption("Frog Hunt!")
 
 clock = pygame.time.Clock()
 
-player_x = 100
-player_y = 100
+player = Player(100, 100)
 
 running = True
 
 while running:
+
     for event in pygame.event.get():
+
         if event.type == pygame.QUIT:
             running = False
 
+    player.update(clock)
+
     screen.fill((30, 30, 30))
 
-    pygame.draw.rect(screen, (100, 200, 100), (player_x, player_y, 50, 50))
+    player.draw(screen)
 
     pygame.display.flip()
 
     clock.tick(60)
+
 
 pygame.quit()
