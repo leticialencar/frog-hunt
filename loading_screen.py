@@ -28,6 +28,8 @@ class LoadingScreen:
             "Será que o Fabrício trouxe o esparadrapo?",
             "Simpatia: onde Igor quase secou a maionese temperada.",
             "Tadeu já foi revivido hoje?",
+            "Curiosidade: Igor trocou de curso, mas o PI de Engenharia foi atrás dele.",
+            "Será que a AraujoSat está funcionando hoje?",
             "Ramon é o professor favorito de Igor, Lucas e Beatriz.",
             "Não existe crise financeira que impeça uma Bulldog.",
             "Você sabia? Tadeu possui três netas: Evelyn, Beatriz e Letícia.",
