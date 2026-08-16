@@ -29,6 +29,24 @@ font = pygame.font.Font(
     12
 )
 
+frog_icon = pygame.image.load(
+    "assets/frog/frog_icon.png"
+).convert_alpha()
+
+frog_icon = pygame.transform.scale(
+    frog_icon,
+    (46, 46)
+)
+
+counter_background = pygame.image.load(
+    "assets/ui/frog_counter_bg.png"
+).convert_alpha()
+
+counter_background = pygame.transform.scale(
+    counter_background,
+    (140, 80)
+)
+
 player = Player(100, 100, WIDTH, HEIGHT)
 
 frogs = [
@@ -39,11 +57,13 @@ frogs = [
     Frog(650, 450)
 ]
 
+frogs_caught = 0
+
 min_frogs = 3
 max_frogs = 8
 
 spawn_timer = 0
-spawn_interval = 3000
+spawn_interval = random.randint(300, 700)
 
 
 def create_frog():
@@ -97,6 +117,11 @@ while running:
                     if distance_x < 80 and distance_y < 80:
 
                         frogs.remove(frog)
+                        frogs_caught += 1
+
+                        spawn_timer = 0
+                        spawn_interval = random.randint(300, 700)
+
                         break
 
     player.update(clock)
@@ -112,19 +137,13 @@ while running:
         and len(frogs) < max_frogs
     ):
 
-        spawn_timer = 0
+        new_frog = create_frog()
 
-        amount = random.randint(1, 2)
+        if new_frog:
+            frogs.append(new_frog)
 
-        for _ in range(amount):
-
-            if len(frogs) >= max_frogs:
-                break
-
-            new_frog = create_frog()
-
-            if new_frog:
-                frogs.append(new_frog)
+            spawn_timer = 0
+            spawn_interval = random.randint(300, 700)
 
     screen.blit(background, (0, 0))
 
@@ -156,6 +175,31 @@ while running:
             )
 
     player.draw(screen)
+
+    screen.blit(
+        counter_background,
+        (10, 10)
+    )
+
+    screen.blit(
+        frog_icon,
+        (38, 27)
+    )
+
+    frog_count_text = font.render(
+        str(frogs_caught),
+        True,
+        (255, 255, 255)
+    )
+
+    frog_count_rect = frog_count_text.get_rect(
+        center=(95, 49)
+    )
+
+    screen.blit(
+        frog_count_text,
+        frog_count_rect
+    )
 
     pygame.display.flip()
 
