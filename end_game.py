@@ -80,7 +80,11 @@ class EndGame:
         self.sequence_index = 0
 
         self.animation_timer = 0
-        self.animation_speed = 250
+        
+        if self.frogs_caught == 0:
+            self.animation_speed = 250
+        else:
+            self.animation_speed = 180
 
         self.selected_option = 0
 
