@@ -63,9 +63,9 @@ class MainMenu:
         self.lore_text = (
             "De Barbalha para o mundo, Beatriz, ou Bea para os mais "
             "próximos, é uma das três netas de Tadeu e uma caçadora "
-            "de sapinhos que nunca recusa um bingo. Dizem que ela "
-            "consegue encontrar qualquer sapinho... desde que não "
-            "esteja ocupada marcando a cartela."
+            "de sapinhos que nunca recusa um bingo. "
+            "Dizem que ela consegue encontrar qualquer sapinho... "
+            "desde que não esteja ocupada marcando a cartela."
         )
 
     def _get_panel_rect(self):
@@ -527,7 +527,7 @@ class MainMenu:
             "Jogar",
             (
                 self.width // 2,
-                panel_rect.top + 300
+                panel_rect.top + 320
             ),
             self.selected_option == 0
         )
@@ -537,7 +537,7 @@ class MainMenu:
             "Sair",
             (
                 self.width // 2,
-                panel_rect.top + 360
+                panel_rect.top + 380
             ),
             self.selected_option == 1
         )

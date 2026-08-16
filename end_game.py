@@ -1,3 +1,4 @@
+import math
 import pygame
 
 
@@ -31,9 +32,19 @@ class EndGame:
             16
         )
 
+        self.option_font = pygame.font.Font(
+            "assets/fonts/Minecraftia-Regular.ttf",
+            14
+        )
+
         self.small_font = pygame.font.Font(
             "assets/fonts/Minecraftia-Regular.ttf",
             12
+        )
+
+        self.stats_font = pygame.font.Font(
+            "assets/fonts/Minecraftia-Regular.ttf",
+            14
         )
 
         self.title_font = pygame.font.Font(
@@ -106,6 +117,8 @@ class EndGame:
             "Sair"
         ]
 
+        self.time_elapsed = 0
+
     def handle_event(self, event):
 
         if event.type == pygame.KEYDOWN:
@@ -141,6 +154,8 @@ class EndGame:
     def update(self, clock):
 
         delta_time = clock.get_time()
+
+        self.time_elapsed += delta_time / 1000
 
         self.animation_timer += delta_time
 
@@ -203,7 +218,11 @@ class EndGame:
             (-1, 0),
             (1, 0),
             (0, -1),
-            (0, 1)
+            (0, 1),
+            (-1, -1),
+            (1, -1),
+            (-1, 1),
+            (1, 1)
         ]
 
         for offset_x, offset_y in outline_positions:
@@ -226,30 +245,77 @@ class EndGame:
     def draw_panel(self, screen):
 
         panel_width = 440
-        panel_height = 520
+        panel_height = 480
 
-        panel = pygame.Surface(
-            (
-                panel_width,
-                panel_height
-            ),
+        panel_rect = pygame.Rect(0, 0, panel_width, panel_height)
+        panel_rect.center = (self.width // 2, self.height // 2)
+
+        shadow = pygame.Surface(
+            (panel_width + 16, panel_height + 16),
             pygame.SRCALPHA
         )
 
-        panel.fill(
-            (35, 25, 18, 180)
+        pygame.draw.rect(
+            shadow,
+            (0, 0, 0, 90),
+            shadow.get_rect(),
+            border_radius=26
         )
 
-        panel_rect = panel.get_rect(
-            center=(
-                self.width // 2,
-                self.height // 2
+        shadow_rect = shadow.get_rect(
+            center=(panel_rect.centerx, panel_rect.centery + 6)
+        )
+
+        screen.blit(shadow, shadow_rect)
+
+        panel = pygame.Surface(
+            (panel_width, panel_height),
+            pygame.SRCALPHA
+        )
+
+        top_color = (35, 27, 18, 170)
+        bottom_color = (20, 16, 10, 190)
+
+        for y in range(panel_height):
+
+            t = y / panel_height
+
+            color = (
+                int(top_color[0] + (bottom_color[0] - top_color[0]) * t),
+                int(top_color[1] + (bottom_color[1] - top_color[1]) * t),
+                int(top_color[2] + (bottom_color[2] - top_color[2]) * t),
+                int(top_color[3] + (bottom_color[3] - top_color[3]) * t)
             )
+
+            pygame.draw.line(panel, color, (0, y), (panel_width, y))
+
+        mask = pygame.Surface((panel_width, panel_height), pygame.SRCALPHA)
+        pygame.draw.rect(
+            mask,
+            (255, 255, 255, 255),
+            mask.get_rect(),
+            border_radius=24
+        )
+        panel.blit(mask, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
+
+        screen.blit(panel, panel_rect)
+
+        pygame.draw.rect(
+            screen,
+            (255, 214, 140),
+            panel_rect,
+            width=2,
+            border_radius=24
         )
 
-        screen.blit(
-            panel,
-            panel_rect
+        inner_rect = panel_rect.inflate(-10, -10)
+
+        pygame.draw.rect(
+            screen,
+            (120, 85, 45),
+            inner_rect,
+            width=2,
+            border_radius=18
         )
 
         return panel_rect
@@ -264,9 +330,42 @@ class EndGame:
 
         if selected:
 
+            pulse = (math.sin(self.time_elapsed * 4) + 1) / 2  
+
+            highlight_width = 260
+            highlight_height = 36
+
+            highlight = pygame.Surface(
+                (highlight_width, highlight_height),
+                pygame.SRCALPHA
+            )
+
+            alpha = int(60 + pulse * 40)
+
+            pygame.draw.rect(
+                highlight,
+                (255, 200, 100, alpha),
+                highlight.get_rect(),
+                border_radius=14
+            )
+
+            pygame.draw.rect(
+                highlight,
+                (255, 220, 150, 160),
+                highlight.get_rect(),
+                width=1,
+                border_radius=14
+            )
+
+            highlight_rect = highlight.get_rect(center=center)
+
+            screen.blit(highlight, highlight_rect)
+
             text_color = (255, 230, 150)
 
-            arrow = self.font.render(
+            arrow_offset = int(pulse * 4)
+
+            arrow = self.option_font.render(
                 ">",
                 True,
                 (255, 230, 150)
@@ -274,7 +373,7 @@ class EndGame:
 
             arrow_rect = arrow.get_rect(
                 midright=(
-                    center[0] - 125,
+                    center[0] - 105 + arrow_offset,
                     center[1]
                 )
             )
@@ -286,12 +385,12 @@ class EndGame:
 
         else:
 
-            text_color = (255, 255, 255)
+            text_color = (220, 220, 220)
 
         self.draw_text_with_outline(
             screen,
             text,
-            self.font,
+            self.option_font,
             center,
             text_color
         )
@@ -318,7 +417,7 @@ class EndGame:
             self.title_font,
             (
                 self.width // 2,
-                panel_rect.top + 45
+                panel_rect.top + 40
             ),
             (255, 255, 255)
         )
@@ -330,7 +429,7 @@ class EndGame:
         frame_rect = frame.get_rect(
             center=(
                 self.width // 2,
-                panel_rect.top + 160
+                panel_rect.top + 145
             )
         )
 
@@ -339,37 +438,15 @@ class EndGame:
             frame_rect
         )
 
-        stats_y = panel_rect.top + 275
+        stats_y = panel_rect.top + 265
 
         self.draw_text_with_outline(
             screen,
             f"Sapinhos: {self.frogs_caught}",
-            self.font,
+            self.stats_font,
             (
                 self.width // 2,
                 stats_y
-            ),
-            (255, 255, 255)
-        )
-
-        seconds = int(
-            self.game_time / 1000
-        )
-
-        minutes = seconds // 60
-        seconds = seconds % 60
-
-        time_text = (
-            f"Tempo: {minutes:02d}:{seconds:02d}"
-        )
-
-        self.draw_text_with_outline(
-            screen,
-            time_text,
-            self.font,
-            (
-                self.width // 2,
-                stats_y + 35
             ),
             (255, 255, 255)
         )
@@ -385,25 +462,9 @@ class EndGame:
             self.small_font,
             (
                 self.width // 2,
-                stats_y + 75
+                stats_y + 45
             ),
             (255, 255, 255)
-        )
-
-        separator_y = panel_rect.top + 385
-
-        pygame.draw.line(
-            screen,
-            (180, 160, 120),
-            (
-                panel_rect.left + 70,
-                separator_y
-            ),
-            (
-                panel_rect.right - 70,
-                separator_y
-            ),
-            1
         )
 
         self.draw_option(
@@ -411,7 +472,7 @@ class EndGame:
             "Jogar Novamente",
             (
                 self.width // 2,
-                panel_rect.top + 430
+                panel_rect.top + 375
             ),
             self.selected_option == 0
         )
@@ -421,7 +482,7 @@ class EndGame:
             "Sair",
             (
                 self.width // 2,
-                panel_rect.top + 480
+                panel_rect.top + 425
             ),
             self.selected_option == 1
         )
