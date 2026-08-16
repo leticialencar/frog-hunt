@@ -3,6 +3,7 @@ import pygame
 from game import Game
 from end_game import EndGame
 from loading_screen import LoadingScreen
+from main_menu import MainMenu
 
 
 pygame.init()
@@ -21,15 +22,16 @@ pygame.display.set_caption(
 clock = pygame.time.Clock()
 
 
-loading_screen = LoadingScreen(
+main_menu = MainMenu(
     WIDTH,
     HEIGHT
 )
 
+loading_screen = None
 game = None
 end_game = None
 
-current_screen = "loading"
+current_screen = "main_menu"
 
 running = True
 
@@ -40,6 +42,23 @@ while running:
         if event.type == pygame.QUIT:
 
             running = False
+
+        elif current_screen == "main_menu":
+
+            result = main_menu.handle_event(event)
+
+            if result == "play":
+
+                loading_screen = LoadingScreen(
+                    WIDTH,
+                    HEIGHT
+                )
+
+                current_screen = "loading"
+
+            elif result == "quit":
+
+                running = False
 
         elif current_screen == "game":
 
@@ -63,9 +82,16 @@ while running:
 
                 running = False
 
-    if current_screen == "loading":
+    if current_screen == "main_menu":
 
-        loading_finished = loading_screen.update(clock)
+        main_menu.update(clock)
+        main_menu.draw(screen)
+
+    elif current_screen == "loading":
+
+        loading_finished = loading_screen.update(
+            clock
+        )
 
         loading_screen.draw(screen)
 
