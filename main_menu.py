@@ -2,21 +2,12 @@ import math
 import pygame
 
 
-class EndGame:
+class MainMenu:
 
-    def __init__(
-        self,
-        width,
-        height,
-        frogs_caught,
-        game_time
-    ):
+    def __init__(self, width, height):
 
         self.width = width
         self.height = height
-
-        self.frogs_caught = frogs_caught
-        self.game_time = game_time
 
         self.background = pygame.image.load(
             "assets/background/background.png"
@@ -32,102 +23,103 @@ class EndGame:
             16
         )
 
-        self.option_font = pygame.font.Font(
-            "assets/fonts/Minecraftia-Regular.ttf",
-            14
-        )
-
         self.small_font = pygame.font.Font(
             "assets/fonts/Minecraftia-Regular.ttf",
             12
         )
 
-        self.stats_font = pygame.font.Font(
-            "assets/fonts/Minecraftia-Regular.ttf",
-            14
+        self.logo = pygame.image.load(
+            "assets/ui/frog_hunt_logo.png"
+        ).convert_alpha()
+
+        logo_width = 350
+
+        logo_height = int(
+            self.logo.get_height()
+            * (logo_width / self.logo.get_width())
         )
 
-        self.title_font = pygame.font.Font(
-            "assets/fonts/Minecraftia-Regular.ttf",
-            24
-        )
-
-        if self.frogs_caught == 0:
-            self.animation_sheet = pygame.image.load(
-                "assets/player/bea_sad.png"
-            ).convert_alpha()
-        else:
-            self.animation_sheet = pygame.image.load(
-                "assets/player/bea_celebrate.png"
-            ).convert_alpha()
-
-        self.frame_width = (
-            self.animation_sheet.get_width() // 4
-        )
-
-        self.frame_height = (
-            self.animation_sheet.get_height()
-        )
-
-        self.frames = []
-
-        for i in range(4):
-
-            frame = self.animation_sheet.subsurface(
-                (
-                    i * self.frame_width,
-                    0,
-                    self.frame_width,
-                    self.frame_height
-                )
+        self.logo = pygame.transform.smoothscale(
+            self.logo,
+            (
+                logo_width,
+                logo_height
             )
-
-            frame = pygame.transform.smoothscale(
-                frame,
-                (
-                    int(self.frame_width * 0.25),
-                    int(self.frame_height * 0.25)
-                )
-            )
-
-            self.frames.append(frame)
-
-        self.current_frame = 0
-
-        self.animation_sequence = [
-            0,
-            1,
-            2,
-            1,
-            0
-        ]
-
-        self.sequence_index = 0
-        self.animation_timer = 0
-
-        if self.frogs_caught == 0:
-            self.animation_speed = 250
-        else:
-            self.animation_speed = 180
+        )
 
         self.selected_option = 0
 
         self.options = [
-            "Jogar Novamente",
+            "Jogar",
             "Sair"
         ]
 
         self.time_elapsed = 0
 
+        self.icon_radius = 14
+
+        self.show_lore = False
+
+        self.lore_text = (
+            "De Barbalha para o mundo, Beatriz, ou Bea para os mais "
+            "próximos, é uma das três netas de Tadeu e uma caçadora "
+            "de sapinhos que nunca recusa um bingo. "
+            "Dizem que ela consegue encontrar qualquer sapinho... "
+            "desde que não esteja ocupada marcando a cartela."
+        )
+
+    def _get_panel_rect(self):
+
+        panel_width = 440
+        panel_height = 500
+
+        panel_rect = pygame.Rect(0, 0, panel_width, panel_height)
+        panel_rect.center = (self.width // 2, self.height // 2)
+
+        return panel_rect
+
+    def _get_icon_rect(self):
+
+        panel_rect = self._get_panel_rect()
+
+        icon_center = (
+            panel_rect.right - 34,
+            panel_rect.top + 34
+        )
+
+        icon_rect = pygame.Rect(0, 0, self.icon_radius * 2, self.icon_radius * 2)
+        icon_rect.center = icon_center
+
+        return icon_rect
+
     def handle_event(self, event):
 
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+
+            if self._get_icon_rect().collidepoint(event.pos):
+
+                self.show_lore = not self.show_lore
+
+            elif self.show_lore:
+
+                self.show_lore = False
+
         if event.type == pygame.KEYDOWN:
+
+            if self.show_lore:
+
+                if event.key in (pygame.K_ESCAPE, pygame.K_RETURN):
+
+                    self.show_lore = False
+
+                return None
 
             if event.key == pygame.K_UP:
 
                 self.selected_option -= 1
 
                 if self.selected_option < 0:
+
                     self.selected_option = (
                         len(self.options) - 1
                     )
@@ -139,54 +131,52 @@ class EndGame:
                 if self.selected_option >= len(
                     self.options
                 ):
+
                     self.selected_option = 0
 
             elif event.key == pygame.K_RETURN:
 
                 if self.selected_option == 0:
-                    return "game"
+
+                    return "play"
 
                 if self.selected_option == 1:
+
                     return "quit"
 
         return None
 
     def update(self, clock):
 
-        delta_time = clock.get_time()
+        self.time_elapsed += clock.get_time() / 1000
 
-        self.time_elapsed += delta_time / 1000
+    def wrap_text(self, text, font, max_width):
 
-        self.animation_timer += delta_time
+        words = text.split(" ")
+        lines = []
+        current_line = ""
 
-        if self.sequence_index == 0:
-            frame_duration = 500
+        for word in words:
 
-        elif self.sequence_index == 2:
-            frame_duration = 400
+            test_line = f"{current_line} {word}".strip()
 
-        elif self.sequence_index == 4:
-            frame_duration = 500
+            if font.size(test_line)[0] <= max_width:
 
-        else:
-            frame_duration = self.animation_speed
+                current_line = test_line
 
-        if self.animation_timer >= frame_duration:
+            else:
 
-            self.animation_timer = 0
+                if current_line:
 
-            self.sequence_index += 1
+                    lines.append(current_line)
 
-            if self.sequence_index >= len(
-                self.animation_sequence
-            ):
-                self.sequence_index = 0
+                current_line = word
 
-            self.current_frame = (
-                self.animation_sequence[
-                    self.sequence_index
-                ]
-            )
+        if current_line:
+
+            lines.append(current_line)
+
+        return lines
 
     def draw_text_with_outline(
         self,
@@ -244,11 +234,10 @@ class EndGame:
 
     def draw_panel(self, screen):
 
-        panel_width = 440
-        panel_height = 480
+        panel_rect = self._get_panel_rect()
 
-        panel_rect = pygame.Rect(0, 0, panel_width, panel_height)
-        panel_rect.center = (self.width // 2, self.height // 2)
+        panel_width = panel_rect.width
+        panel_height = panel_rect.height
 
         shadow = pygame.Surface(
             (panel_width + 16, panel_height + 16),
@@ -267,7 +256,7 @@ class EndGame:
         )
 
         screen.blit(shadow, shadow_rect)
-
+        
         panel = pygame.Surface(
             (panel_width, panel_height),
             pygame.SRCALPHA
@@ -320,6 +309,97 @@ class EndGame:
 
         return panel_rect
 
+    def draw_lore_icon(self, screen):
+
+        icon_rect = self._get_icon_rect()
+
+        pygame.draw.circle(
+            screen,
+            (25, 20, 15),
+            icon_rect.center,
+            self.icon_radius
+        )
+
+        pygame.draw.circle(
+            screen,
+            (255, 214, 140),
+            icon_rect.center,
+            self.icon_radius,
+            width=2
+        )
+
+        self.draw_text_with_outline(
+            screen,
+            "?",
+            self.small_font,
+            icon_rect.center,
+            (255, 224, 150)
+        )
+
+    def draw_lore_popup(self, screen):
+
+        overlay = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
+
+        overlay.fill((0, 0, 0, 160))
+
+        screen.blit(overlay, (0, 0))
+
+        popup_width = 380
+        popup_height = 290
+
+        popup = pygame.Surface((popup_width, popup_height), pygame.SRCALPHA)
+
+        popup.fill((30, 24, 16, 235))
+
+        popup_rect = popup.get_rect(
+            center=(self.width // 2, self.height // 2)
+        )
+
+        screen.blit(popup, popup_rect)
+
+        pygame.draw.rect(
+            screen,
+            (255, 214, 140),
+            popup_rect,
+            width=2,
+            border_radius=12
+        )
+
+        self.draw_text_with_outline(
+            screen,
+            "Quem é a Bea?",
+            self.font,
+            (self.width // 2, popup_rect.top + 38),
+            (255, 224, 150)
+        )
+
+        lines = self.wrap_text(
+            self.lore_text,
+            self.small_font,
+            popup_width - 60
+        )
+
+        line_height = 22
+        start_y = popup_rect.top + 82
+
+        for index, line in enumerate(lines):
+
+            self.draw_text_with_outline(
+                screen,
+                line,
+                self.small_font,
+                (self.width // 2, start_y + index * line_height),
+                (255, 255, 255)
+            )
+
+        self.draw_text_with_outline(
+            screen,
+            "Clique para fechar",
+            self.small_font,
+            (self.width // 2, popup_rect.bottom - 34),
+            (150, 150, 150)
+        )
+
     def draw_option(
         self,
         screen,
@@ -365,7 +445,7 @@ class EndGame:
 
             arrow_offset = int(pulse * 4)
 
-            arrow = self.option_font.render(
+            arrow = self.font.render(
                 ">",
                 True,
                 (255, 230, 150)
@@ -390,7 +470,7 @@ class EndGame:
         self.draw_text_with_outline(
             screen,
             text,
-            self.option_font,
+            self.font,
             center,
             text_color
         )
@@ -406,73 +486,48 @@ class EndGame:
             screen
         )
 
-        if self.frogs_caught == 0:
-            title = "Fim de jogo..."
-        else:
-            title = "Fim de jogo!"
-
-        self.draw_text_with_outline(
-            screen,
-            title,
-            self.title_font,
-            (
-                self.width // 2,
-                panel_rect.top + 40
-            ),
-            (255, 255, 255)
+        logo_center = (
+            self.width // 2,
+            panel_rect.top + 150
         )
 
-        frame = self.frames[
-            self.current_frame
-        ]
+        glow_radius = 130
 
-        frame_rect = frame.get_rect(
-            center=(
-                self.width // 2,
-                panel_rect.top + 145
+        glow = pygame.Surface(
+            (glow_radius * 2, glow_radius * 2),
+            pygame.SRCALPHA
+        )
+
+        for r in range(glow_radius, 0, -2):
+
+            alpha = int(25 * (1 - r / glow_radius))
+
+            pygame.draw.circle(
+                glow,
+                (255, 240, 180, alpha),
+                (glow_radius, glow_radius),
+                r
             )
-        )
+
+        glow_rect = glow.get_rect(center=logo_center)
+
+        screen.blit(glow, glow_rect)
+
+        logo_rect = self.logo.get_rect(center=logo_center)
 
         screen.blit(
-            frame,
-            frame_rect
+            self.logo,
+            logo_rect
         )
 
-        stats_y = panel_rect.top + 265
-
-        self.draw_text_with_outline(
-            screen,
-            f"Sapinhos: {self.frogs_caught}",
-            self.stats_font,
-            (
-                self.width // 2,
-                stats_y
-            ),
-            (255, 255, 255)
-        )
-
-        if self.frogs_caught == 0:
-            message = "Nenhum sapinho dessa vez."
-        else:
-            message = "Obrigado por jogar!"
-
-        self.draw_text_with_outline(
-            screen,
-            message,
-            self.small_font,
-            (
-                self.width // 2,
-                stats_y + 45
-            ),
-            (255, 255, 255)
-        )
+        self.draw_lore_icon(screen)
 
         self.draw_option(
             screen,
-            "Jogar Novamente",
+            "Jogar",
             (
                 self.width // 2,
-                panel_rect.top + 375
+                panel_rect.top + 320
             ),
             self.selected_option == 0
         )
@@ -482,7 +537,22 @@ class EndGame:
             "Sair",
             (
                 self.width // 2,
-                panel_rect.top + 425
+                panel_rect.top + 380
             ),
             self.selected_option == 1
         )
+
+        self.draw_text_with_outline(
+            screen,
+            "Use ↑ ↓ e Enter",
+            self.small_font,
+            (
+                self.width // 2,
+                panel_rect.bottom - 25
+            ),
+            (150, 150, 150)
+        )
+
+        if self.show_lore:
+
+            self.draw_lore_popup(screen)
