@@ -47,6 +47,12 @@ class MainMenu:
             )
         )
 
+        self.button_sound = pygame.mixer.Sound(
+            "assets/sounds/button_click.wav"
+        )
+
+        self.button_sound.set_volume(0.7)
+
         self.selected_option = 0
 
         self.options = [
@@ -73,8 +79,17 @@ class MainMenu:
         panel_width = 440
         panel_height = 500
 
-        panel_rect = pygame.Rect(0, 0, panel_width, panel_height)
-        panel_rect.center = (self.width // 2, self.height // 2)
+        panel_rect = pygame.Rect(
+            0,
+            0,
+            panel_width,
+            panel_height
+        )
+
+        panel_rect.center = (
+            self.width // 2,
+            self.height // 2
+        )
 
         return panel_rect
 
@@ -87,7 +102,13 @@ class MainMenu:
             panel_rect.top + 34
         )
 
-        icon_rect = pygame.Rect(0, 0, self.icon_radius * 2, self.icon_radius * 2)
+        icon_rect = pygame.Rect(
+            0,
+            0,
+            self.icon_radius * 2,
+            self.icon_radius * 2
+        )
+
         icon_rect.center = icon_center
 
         return icon_rect
@@ -98,9 +119,13 @@ class MainMenu:
 
             if self._get_icon_rect().collidepoint(event.pos):
 
+                self.button_sound.play()
+
                 self.show_lore = not self.show_lore
 
             elif self.show_lore:
+
+                self.button_sound.play()
 
                 self.show_lore = False
 
@@ -108,7 +133,12 @@ class MainMenu:
 
             if self.show_lore:
 
-                if event.key in (pygame.K_ESCAPE, pygame.K_RETURN):
+                if event.key in (
+                    pygame.K_ESCAPE,
+                    pygame.K_RETURN
+                ):
+
+                    self.button_sound.play()
 
                     self.show_lore = False
 
@@ -135,6 +165,8 @@ class MainMenu:
                     self.selected_option = 0
 
             elif event.key == pygame.K_RETURN:
+
+                self.button_sound.play()
 
                 if self.selected_option == 0:
 
@@ -252,11 +284,17 @@ class MainMenu:
         )
 
         shadow_rect = shadow.get_rect(
-            center=(panel_rect.centerx, panel_rect.centery + 6)
+            center=(
+                panel_rect.centerx,
+                panel_rect.centery + 6
+            )
         )
 
-        screen.blit(shadow, shadow_rect)
-        
+        screen.blit(
+            shadow,
+            shadow_rect
+        )
+
         panel = pygame.Surface(
             (panel_width, panel_height),
             pygame.SRCALPHA
@@ -270,24 +308,53 @@ class MainMenu:
             t = y / panel_height
 
             color = (
-                int(top_color[0] + (bottom_color[0] - top_color[0]) * t),
-                int(top_color[1] + (bottom_color[1] - top_color[1]) * t),
-                int(top_color[2] + (bottom_color[2] - top_color[2]) * t),
-                int(top_color[3] + (bottom_color[3] - top_color[3]) * t)
+                int(
+                    top_color[0]
+                    + (bottom_color[0] - top_color[0]) * t
+                ),
+                int(
+                    top_color[1]
+                    + (bottom_color[1] - top_color[1]) * t
+                ),
+                int(
+                    top_color[2]
+                    + (bottom_color[2] - top_color[2]) * t
+                ),
+                int(
+                    top_color[3]
+                    + (bottom_color[3] - top_color[3]) * t
+                )
             )
 
-            pygame.draw.line(panel, color, (0, y), (panel_width, y))
+            pygame.draw.line(
+                panel,
+                color,
+                (0, y),
+                (panel_width, y)
+            )
 
-        mask = pygame.Surface((panel_width, panel_height), pygame.SRCALPHA)
+        mask = pygame.Surface(
+            (panel_width, panel_height),
+            pygame.SRCALPHA
+        )
+
         pygame.draw.rect(
             mask,
             (255, 255, 255, 255),
             mask.get_rect(),
             border_radius=24
         )
-        panel.blit(mask, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
 
-        screen.blit(panel, panel_rect)
+        panel.blit(
+            mask,
+            (0, 0),
+            special_flags=pygame.BLEND_RGBA_MIN
+        )
+
+        screen.blit(
+            panel,
+            panel_rect
+        )
 
         pygame.draw.rect(
             screen,
@@ -297,7 +364,10 @@ class MainMenu:
             border_radius=24
         )
 
-        inner_rect = panel_rect.inflate(-10, -10)
+        inner_rect = panel_rect.inflate(
+            -10,
+            -10
+        )
 
         pygame.draw.rect(
             screen,
@@ -338,24 +408,43 @@ class MainMenu:
 
     def draw_lore_popup(self, screen):
 
-        overlay = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
+        overlay = pygame.Surface(
+            (self.width, self.height),
+            pygame.SRCALPHA
+        )
 
-        overlay.fill((0, 0, 0, 160))
+        overlay.fill(
+            (0, 0, 0, 160)
+        )
 
-        screen.blit(overlay, (0, 0))
+        screen.blit(
+            overlay,
+            (0, 0)
+        )
 
         popup_width = 380
         popup_height = 290
 
-        popup = pygame.Surface((popup_width, popup_height), pygame.SRCALPHA)
-
-        popup.fill((30, 24, 16, 235))
-
-        popup_rect = popup.get_rect(
-            center=(self.width // 2, self.height // 2)
+        popup = pygame.Surface(
+            (popup_width, popup_height),
+            pygame.SRCALPHA
         )
 
-        screen.blit(popup, popup_rect)
+        popup.fill(
+            (30, 24, 16, 235)
+        )
+
+        popup_rect = popup.get_rect(
+            center=(
+                self.width // 2,
+                self.height // 2
+            )
+        )
+
+        screen.blit(
+            popup,
+            popup_rect
+        )
 
         pygame.draw.rect(
             screen,
@@ -369,7 +458,10 @@ class MainMenu:
             screen,
             "Quem é a Bea?",
             self.font,
-            (self.width // 2, popup_rect.top + 38),
+            (
+                self.width // 2,
+                popup_rect.top + 38
+            ),
             (255, 224, 150)
         )
 
@@ -388,7 +480,10 @@ class MainMenu:
                 screen,
                 line,
                 self.small_font,
-                (self.width // 2, start_y + index * line_height),
+                (
+                    self.width // 2,
+                    start_y + index * line_height
+                ),
                 (255, 255, 255)
             )
 
@@ -396,7 +491,10 @@ class MainMenu:
             screen,
             "Clique para fechar",
             self.small_font,
-            (self.width // 2, popup_rect.bottom - 34),
+            (
+                self.width // 2,
+                popup_rect.bottom - 34
+            ),
             (150, 150, 150)
         )
 
@@ -410,17 +508,24 @@ class MainMenu:
 
         if selected:
 
-            pulse = (math.sin(self.time_elapsed * 4) + 1) / 2  
+            pulse = (
+                math.sin(self.time_elapsed * 4) + 1
+            ) / 2
 
             highlight_width = 260
             highlight_height = 36
 
             highlight = pygame.Surface(
-                (highlight_width, highlight_height),
+                (
+                    highlight_width,
+                    highlight_height
+                ),
                 pygame.SRCALPHA
             )
 
-            alpha = int(60 + pulse * 40)
+            alpha = int(
+                60 + pulse * 40
+            )
 
             pygame.draw.rect(
                 highlight,
@@ -437,13 +542,24 @@ class MainMenu:
                 border_radius=14
             )
 
-            highlight_rect = highlight.get_rect(center=center)
+            highlight_rect = highlight.get_rect(
+                center=center
+            )
 
-            screen.blit(highlight, highlight_rect)
+            screen.blit(
+                highlight,
+                highlight_rect
+            )
 
-            text_color = (255, 230, 150)
+            text_color = (
+                255,
+                230,
+                150
+            )
 
-            arrow_offset = int(pulse * 4)
+            arrow_offset = int(
+                pulse * 4
+            )
 
             arrow = self.font.render(
                 ">",
@@ -465,7 +581,11 @@ class MainMenu:
 
         else:
 
-            text_color = (220, 220, 220)
+            text_color = (
+                220,
+                220,
+                220
+            )
 
         self.draw_text_with_outline(
             screen,
@@ -494,33 +614,56 @@ class MainMenu:
         glow_radius = 130
 
         glow = pygame.Surface(
-            (glow_radius * 2, glow_radius * 2),
+            (
+                glow_radius * 2,
+                glow_radius * 2
+            ),
             pygame.SRCALPHA
         )
 
-        for r in range(glow_radius, 0, -2):
+        for r in range(
+            glow_radius,
+            0,
+            -2
+        ):
 
-            alpha = int(25 * (1 - r / glow_radius))
+            alpha = int(
+                25 * (
+                    1 - r / glow_radius
+                )
+            )
 
             pygame.draw.circle(
                 glow,
                 (255, 240, 180, alpha),
-                (glow_radius, glow_radius),
+                (
+                    glow_radius,
+                    glow_radius
+                ),
                 r
             )
 
-        glow_rect = glow.get_rect(center=logo_center)
+        glow_rect = glow.get_rect(
+            center=logo_center
+        )
 
-        screen.blit(glow, glow_rect)
+        screen.blit(
+            glow,
+            glow_rect
+        )
 
-        logo_rect = self.logo.get_rect(center=logo_center)
+        logo_rect = self.logo.get_rect(
+            center=logo_center
+        )
 
         screen.blit(
             self.logo,
             logo_rect
         )
 
-        self.draw_lore_icon(screen)
+        self.draw_lore_icon(
+            screen
+        )
 
         self.draw_option(
             screen,
@@ -555,4 +698,6 @@ class MainMenu:
 
         if self.show_lore:
 
-            self.draw_lore_popup(screen)
+            self.draw_lore_popup(
+                screen
+            )

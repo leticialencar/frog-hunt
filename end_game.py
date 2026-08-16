@@ -53,10 +53,13 @@ class EndGame:
         )
 
         if self.frogs_caught == 0:
+
             self.animation_sheet = pygame.image.load(
                 "assets/player/bea_sad.png"
             ).convert_alpha()
+
         else:
+
             self.animation_sheet = pygame.image.load(
                 "assets/player/bea_celebrate.png"
             ).convert_alpha()
@@ -106,8 +109,11 @@ class EndGame:
         self.animation_timer = 0
 
         if self.frogs_caught == 0:
+
             self.animation_speed = 250
+
         else:
+
             self.animation_speed = 180
 
         self.selected_option = 0
@@ -119,15 +125,24 @@ class EndGame:
 
         self.time_elapsed = 0
 
+        # Som dos botões
+        self.button_sound = pygame.mixer.Sound(
+            "assets/sounds/button_click.wav"
+        )
+
+        self.button_sound.set_volume(0.7)
+
     def handle_event(self, event):
 
         if event.type == pygame.KEYDOWN:
 
+            # Navegação NÃO toca som
             if event.key == pygame.K_UP:
 
                 self.selected_option -= 1
 
                 if self.selected_option < 0:
+
                     self.selected_option = (
                         len(self.options) - 1
                     )
@@ -139,14 +154,20 @@ class EndGame:
                 if self.selected_option >= len(
                     self.options
                 ):
+
                     self.selected_option = 0
 
+            # Som somente ao confirmar
             elif event.key == pygame.K_RETURN:
 
+                self.button_sound.play()
+
                 if self.selected_option == 0:
+
                     return "game"
 
                 if self.selected_option == 1:
+
                     return "quit"
 
         return None
@@ -160,15 +181,19 @@ class EndGame:
         self.animation_timer += delta_time
 
         if self.sequence_index == 0:
+
             frame_duration = 500
 
         elif self.sequence_index == 2:
+
             frame_duration = 400
 
         elif self.sequence_index == 4:
+
             frame_duration = 500
 
         else:
+
             frame_duration = self.animation_speed
 
         if self.animation_timer >= frame_duration:
@@ -180,6 +205,7 @@ class EndGame:
             if self.sequence_index >= len(
                 self.animation_sequence
             ):
+
                 self.sequence_index = 0
 
             self.current_frame = (
@@ -247,8 +273,17 @@ class EndGame:
         panel_width = 440
         panel_height = 480
 
-        panel_rect = pygame.Rect(0, 0, panel_width, panel_height)
-        panel_rect.center = (self.width // 2, self.height // 2)
+        panel_rect = pygame.Rect(
+            0,
+            0,
+            panel_width,
+            panel_height
+        )
+
+        panel_rect.center = (
+            self.width // 2,
+            self.height // 2
+        )
 
         shadow = pygame.Surface(
             (panel_width + 16, panel_height + 16),
@@ -263,10 +298,16 @@ class EndGame:
         )
 
         shadow_rect = shadow.get_rect(
-            center=(panel_rect.centerx, panel_rect.centery + 6)
+            center=(
+                panel_rect.centerx,
+                panel_rect.centery + 6
+            )
         )
 
-        screen.blit(shadow, shadow_rect)
+        screen.blit(
+            shadow,
+            shadow_rect
+        )
 
         panel = pygame.Surface(
             (panel_width, panel_height),
@@ -281,24 +322,53 @@ class EndGame:
             t = y / panel_height
 
             color = (
-                int(top_color[0] + (bottom_color[0] - top_color[0]) * t),
-                int(top_color[1] + (bottom_color[1] - top_color[1]) * t),
-                int(top_color[2] + (bottom_color[2] - top_color[2]) * t),
-                int(top_color[3] + (bottom_color[3] - top_color[3]) * t)
+                int(
+                    top_color[0]
+                    + (bottom_color[0] - top_color[0]) * t
+                ),
+                int(
+                    top_color[1]
+                    + (bottom_color[1] - top_color[1]) * t
+                ),
+                int(
+                    top_color[2]
+                    + (bottom_color[2] - top_color[2]) * t
+                ),
+                int(
+                    top_color[3]
+                    + (bottom_color[3] - top_color[3]) * t
+                )
             )
 
-            pygame.draw.line(panel, color, (0, y), (panel_width, y))
+            pygame.draw.line(
+                panel,
+                color,
+                (0, y),
+                (panel_width, y)
+            )
 
-        mask = pygame.Surface((panel_width, panel_height), pygame.SRCALPHA)
+        mask = pygame.Surface(
+            (panel_width, panel_height),
+            pygame.SRCALPHA
+        )
+
         pygame.draw.rect(
             mask,
             (255, 255, 255, 255),
             mask.get_rect(),
             border_radius=24
         )
-        panel.blit(mask, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
 
-        screen.blit(panel, panel_rect)
+        panel.blit(
+            mask,
+            (0, 0),
+            special_flags=pygame.BLEND_RGBA_MIN
+        )
+
+        screen.blit(
+            panel,
+            panel_rect
+        )
 
         pygame.draw.rect(
             screen,
@@ -308,7 +378,10 @@ class EndGame:
             border_radius=24
         )
 
-        inner_rect = panel_rect.inflate(-10, -10)
+        inner_rect = panel_rect.inflate(
+            -10,
+            -10
+        )
 
         pygame.draw.rect(
             screen,
@@ -330,17 +403,24 @@ class EndGame:
 
         if selected:
 
-            pulse = (math.sin(self.time_elapsed * 4) + 1) / 2  
+            pulse = (
+                math.sin(self.time_elapsed * 4) + 1
+            ) / 2
 
             highlight_width = 260
             highlight_height = 36
 
             highlight = pygame.Surface(
-                (highlight_width, highlight_height),
+                (
+                    highlight_width,
+                    highlight_height
+                ),
                 pygame.SRCALPHA
             )
 
-            alpha = int(60 + pulse * 40)
+            alpha = int(
+                60 + pulse * 40
+            )
 
             pygame.draw.rect(
                 highlight,
@@ -357,13 +437,24 @@ class EndGame:
                 border_radius=14
             )
 
-            highlight_rect = highlight.get_rect(center=center)
+            highlight_rect = highlight.get_rect(
+                center=center
+            )
 
-            screen.blit(highlight, highlight_rect)
+            screen.blit(
+                highlight,
+                highlight_rect
+            )
 
-            text_color = (255, 230, 150)
+            text_color = (
+                255,
+                230,
+                150
+            )
 
-            arrow_offset = int(pulse * 4)
+            arrow_offset = int(
+                pulse * 4
+            )
 
             arrow = self.option_font.render(
                 ">",
@@ -385,7 +476,11 @@ class EndGame:
 
         else:
 
-            text_color = (220, 220, 220)
+            text_color = (
+                220,
+                220,
+                220
+            )
 
         self.draw_text_with_outline(
             screen,
@@ -407,8 +502,11 @@ class EndGame:
         )
 
         if self.frogs_caught == 0:
+
             title = "Fim de jogo..."
+
         else:
+
             title = "Fim de jogo!"
 
         self.draw_text_with_outline(
@@ -452,8 +550,11 @@ class EndGame:
         )
 
         if self.frogs_caught == 0:
+
             message = "Nenhum sapinho dessa vez."
+
         else:
+
             message = "Obrigado por jogar!"
 
         self.draw_text_with_outline(
