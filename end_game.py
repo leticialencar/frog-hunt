@@ -31,25 +31,32 @@ class EndGame:
             16
         )
 
+        self.small_font = pygame.font.Font(
+            "assets/fonts/Minecraftia-Regular.ttf",
+            12
+        )
+
         self.title_font = pygame.font.Font(
             "assets/fonts/Minecraftia-Regular.ttf",
-            28
+            24
         )
 
         if self.frogs_caught == 0:
-
             self.animation_sheet = pygame.image.load(
                 "assets/player/bea_sad.png"
             ).convert_alpha()
-
         else:
-
             self.animation_sheet = pygame.image.load(
                 "assets/player/bea_celebrate.png"
             ).convert_alpha()
 
-        self.frame_width = self.animation_sheet.get_width() // 4
-        self.frame_height = self.animation_sheet.get_height()
+        self.frame_width = (
+            self.animation_sheet.get_width() // 4
+        )
+
+        self.frame_height = (
+            self.animation_sheet.get_height()
+        )
 
         self.frames = []
 
@@ -76,11 +83,17 @@ class EndGame:
 
         self.current_frame = 0
 
-        self.animation_sequence = [0, 1, 2, 1, 0]
-        self.sequence_index = 0
+        self.animation_sequence = [
+            0,
+            1,
+            2,
+            1,
+            0
+        ]
 
+        self.sequence_index = 0
         self.animation_timer = 0
-        
+
         if self.frogs_caught == 0:
             self.animation_speed = 250
         else:
@@ -98,15 +111,21 @@ class EndGame:
         if event.type == pygame.KEYDOWN:
 
             if event.key == pygame.K_UP:
+
                 self.selected_option -= 1
 
                 if self.selected_option < 0:
-                    self.selected_option = len(self.options) - 1
+                    self.selected_option = (
+                        len(self.options) - 1
+                    )
 
             elif event.key == pygame.K_DOWN:
+
                 self.selected_option += 1
 
-                if self.selected_option >= len(self.options):
+                if self.selected_option >= len(
+                    self.options
+                ):
                     self.selected_option = 0
 
             elif event.key == pygame.K_RETURN:
@@ -143,12 +162,16 @@ class EndGame:
 
             self.sequence_index += 1
 
-            if self.sequence_index >= len(self.animation_sequence):
+            if self.sequence_index >= len(
+                self.animation_sequence
+            ):
                 self.sequence_index = 0
 
-            self.current_frame = self.animation_sequence[
-                self.sequence_index
-            ]
+            self.current_frame = (
+                self.animation_sequence[
+                    self.sequence_index
+                ]
+            )
 
     def draw_text_with_outline(
         self,
@@ -156,8 +179,8 @@ class EndGame:
         text,
         font,
         center,
-        text_color,
-        outline_color=(80, 60, 40)
+        text_color=(255, 255, 255),
+        outline_color=(60, 45, 30)
     ):
 
         outline = font.render(
@@ -200,7 +223,38 @@ class EndGame:
             text_rect
         )
 
-    def draw_button(
+    def draw_panel(self, screen):
+
+        panel_width = 440
+        panel_height = 520
+
+        panel = pygame.Surface(
+            (
+                panel_width,
+                panel_height
+            ),
+            pygame.SRCALPHA
+        )
+
+        panel.fill(
+            (35, 25, 18, 180)
+        )
+
+        panel_rect = panel.get_rect(
+            center=(
+                self.width // 2,
+                self.height // 2
+            )
+        )
+
+        screen.blit(
+            panel,
+            panel_rect
+        )
+
+        return panel_rect
+
+    def draw_option(
         self,
         screen,
         text,
@@ -208,54 +262,20 @@ class EndGame:
         selected
     ):
 
-        button_width = 240
-        button_height = 55
-
-        button_rect = pygame.Rect(
-            0,
-            0,
-            button_width,
-            button_height
-        )
-
-        button_rect.center = center
-
         if selected:
-            button_color = (170, 125, 70)
-            border_color = (255, 220, 120)
-        else:
-            button_color = (120, 85, 50)
-            border_color = (80, 55, 35)
 
-        pygame.draw.rect(
-            screen,
-            border_color,
-            button_rect
-        )
-
-        inner_rect = button_rect.inflate(
-            -6,
-            -6
-        )
-
-        pygame.draw.rect(
-            screen,
-            button_color,
-            inner_rect
-        )
-
-        if selected:
+            text_color = (255, 230, 150)
 
             arrow = self.font.render(
                 ">",
                 True,
-                (255, 235, 150)
+                (255, 230, 150)
             )
 
             arrow_rect = arrow.get_rect(
-                center=(
-                    button_rect.left + 25,
-                    button_rect.centery
+                midright=(
+                    center[0] - 125,
+                    center[1]
                 )
             )
 
@@ -264,17 +284,16 @@ class EndGame:
                 arrow_rect
             )
 
+        else:
+
+            text_color = (255, 255, 255)
+
         self.draw_text_with_outline(
             screen,
             text,
             self.font,
-            (
-                button_rect.centerx + 8
-                if selected
-                else button_rect.centerx,
-                button_rect.centery
-            ),
-            (255, 245, 210)
+            center,
+            text_color
         )
 
     def draw(self, screen):
@@ -284,23 +303,34 @@ class EndGame:
             (0, 0)
         )
 
+        panel_rect = self.draw_panel(
+            screen
+        )
+
+        if self.frogs_caught == 0:
+            title = "Fim da aventura..."
+        else:
+            title = "Fim da aventura!"
+
         self.draw_text_with_outline(
             screen,
-            "Fim de jogo!",
+            title,
             self.title_font,
             (
                 self.width // 2,
-                85
+                panel_rect.top + 45
             ),
-            (255, 235, 150)
+            (255, 255, 255)
         )
 
-        frame = self.frames[self.current_frame]
+        frame = self.frames[
+            self.current_frame
+        ]
 
         frame_rect = frame.get_rect(
             center=(
                 self.width // 2,
-                205
+                panel_rect.top + 160
             )
         )
 
@@ -309,23 +339,29 @@ class EndGame:
             frame_rect
         )
 
+        stats_y = panel_rect.top + 275
+
         self.draw_text_with_outline(
             screen,
             f"Sapinhos: {self.frogs_caught}",
             self.font,
             (
                 self.width // 2,
-                335
+                stats_y
             ),
-            (255, 245, 210)
+            (255, 255, 255)
         )
 
-        seconds = int(self.game_time / 1000)
+        seconds = int(
+            self.game_time / 1000
+        )
 
         minutes = seconds // 60
         seconds = seconds % 60
 
-        time_text = f"Tempo: {minutes:02d}:{seconds:02d}"
+        time_text = (
+            f"Tempo: {minutes:02d}:{seconds:02d}"
+        )
 
         self.draw_text_with_outline(
             screen,
@@ -333,27 +369,59 @@ class EndGame:
             self.font,
             (
                 self.width // 2,
-                375
+                stats_y + 35
             ),
-            (255, 245, 210)
+            (255, 255, 255)
         )
 
-        self.draw_button(
+        if self.frogs_caught == 0:
+            message = "Nenhum sapinho dessa vez."
+        else:
+            message = "Obrigado por jogar!"
+
+        self.draw_text_with_outline(
+            screen,
+            message,
+            self.small_font,
+            (
+                self.width // 2,
+                stats_y + 75
+            ),
+            (255, 255, 255)
+        )
+
+        separator_y = panel_rect.top + 385
+
+        pygame.draw.line(
+            screen,
+            (180, 160, 120),
+            (
+                panel_rect.left + 70,
+                separator_y
+            ),
+            (
+                panel_rect.right - 70,
+                separator_y
+            ),
+            1
+        )
+
+        self.draw_option(
             screen,
             "Jogar Novamente",
             (
                 self.width // 2,
-                465
+                panel_rect.top + 430
             ),
             self.selected_option == 0
         )
 
-        self.draw_button(
+        self.draw_option(
             screen,
             "Sair",
             (
                 self.width // 2,
-                535
+                panel_rect.top + 480
             ),
             self.selected_option == 1
         )
