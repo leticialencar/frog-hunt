@@ -308,9 +308,9 @@ class EndGame:
         )
 
         if self.frogs_caught == 0:
-            title = "Fim da aventura..."
+            title = "Fim de jogo..."
         else:
-            title = "Fim da aventura!"
+            title = "Fim de jogo!"
 
         self.draw_text_with_outline(
             screen,
