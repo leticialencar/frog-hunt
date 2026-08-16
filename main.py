@@ -2,6 +2,7 @@ import pygame
 
 from game import Game
 from end_game import EndGame
+from loading_screen import LoadingScreen
 
 
 pygame.init()
@@ -19,14 +20,16 @@ pygame.display.set_caption(
 
 clock = pygame.time.Clock()
 
-game = Game(
+
+loading_screen = LoadingScreen(
     WIDTH,
     HEIGHT
 )
 
+game = None
 end_game = None
 
-current_screen = "game"
+current_screen = "loading"
 
 running = True
 
@@ -60,7 +63,22 @@ while running:
 
                 running = False
 
-    if current_screen == "game":
+    if current_screen == "loading":
+
+        loading_finished = loading_screen.update(clock)
+
+        loading_screen.draw(screen)
+
+        if loading_finished:
+
+            game = Game(
+                WIDTH,
+                HEIGHT
+            )
+
+            current_screen = "game"
+
+    elif current_screen == "game":
 
         game.update(clock)
 
