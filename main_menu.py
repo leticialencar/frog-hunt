@@ -345,7 +345,7 @@ class MainMenu:
         screen.blit(overlay, (0, 0))
 
         popup_width = 380
-        popup_height = 240
+        popup_height = 290
 
         popup = pygame.Surface((popup_width, popup_height), pygame.SRCALPHA)
 
@@ -369,7 +369,7 @@ class MainMenu:
             screen,
             "Quem é a Bea?",
             self.font,
-            (self.width // 2, popup_rect.top + 32),
+            (self.width // 2, popup_rect.top + 38),
             (255, 224, 150)
         )
 
@@ -379,8 +379,8 @@ class MainMenu:
             popup_width - 60
         )
 
-        line_height = 20
-        start_y = popup_rect.top + 70
+        line_height = 22
+        start_y = popup_rect.top + 82
 
         for index, line in enumerate(lines):
 
@@ -396,7 +396,7 @@ class MainMenu:
             screen,
             "Clique para fechar",
             self.small_font,
-            (self.width // 2, popup_rect.bottom - 20),
+            (self.width // 2, popup_rect.bottom - 34),
             (150, 150, 150)
         )
 
@@ -488,7 +488,7 @@ class MainMenu:
 
         logo_center = (
             self.width // 2,
-            panel_rect.top + 115
+            panel_rect.top + 150
         )
 
         glow_radius = 130
