@@ -21,6 +21,12 @@ pygame.display.set_caption(
 
 clock = pygame.time.Clock()
 
+pygame.mixer.music.load(
+    "assets/sounds/game_music.mp3"
+)
+
+pygame.mixer.music.set_volume(0.5)
+
 
 main_menu = MainMenu(
     WIDTH,
@@ -75,6 +81,8 @@ while running:
                     HEIGHT
                 )
 
+                pygame.mixer.music.play(-1)
+
                 end_game = None
                 current_screen = "game"
 
@@ -102,6 +110,8 @@ while running:
                 HEIGHT
             )
 
+            pygame.mixer.music.play(-1)
+
             current_screen = "game"
 
     elif current_screen == "game":
@@ -109,6 +119,8 @@ while running:
         game.update(clock)
 
         if game.is_finished():
+
+            pygame.mixer.music.stop()
 
             end_game = EndGame(
                 WIDTH,
