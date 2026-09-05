@@ -86,6 +86,11 @@ while running:
                 end_game = None
                 current_screen = "game"
 
+            elif result == "menu":
+
+                end_game = None
+                current_screen = "main_menu"
+
             elif result == "quit":
 
                 running = False

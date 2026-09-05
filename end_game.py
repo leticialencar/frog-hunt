@@ -120,12 +120,12 @@ class EndGame:
 
         self.options = [
             "Jogar Novamente",
+            "Voltar ao Menu",
             "Sair"
         ]
 
         self.time_elapsed = 0
 
-        # Som dos botões
         self.button_sound = pygame.mixer.Sound(
             "assets/sounds/button_click.wav"
         )
@@ -136,7 +136,6 @@ class EndGame:
 
         if event.type == pygame.KEYDOWN:
 
-            # Navegação NÃO toca som
             if event.key == pygame.K_UP:
 
                 self.selected_option -= 1
@@ -157,17 +156,17 @@ class EndGame:
 
                     self.selected_option = 0
 
-            # Som somente ao confirmar
             elif event.key == pygame.K_RETURN:
 
                 self.button_sound.play()
 
                 if self.selected_option == 0:
-
                     return "game"
 
                 if self.selected_option == 1:
+                    return "menu"
 
+                if self.selected_option == 2:
                     return "quit"
 
         return None
@@ -563,7 +562,7 @@ class EndGame:
             self.small_font,
             (
                 self.width // 2,
-                stats_y + 45
+                stats_y + 28
             ),
             (255, 255, 255)
         )
@@ -573,9 +572,19 @@ class EndGame:
             "Jogar Novamente",
             (
                 self.width // 2,
-                panel_rect.top + 375
+                panel_rect.top + 345
             ),
             self.selected_option == 0
+        )
+
+        self.draw_option(
+            screen,
+            "Voltar ao Menu",
+            (
+                self.width // 2,
+                panel_rect.top + 395
+            ),
+            self.selected_option == 1
         )
 
         self.draw_option(
@@ -583,7 +592,7 @@ class EndGame:
             "Sair",
             (
                 self.width // 2,
-                panel_rect.top + 425
+                panel_rect.top + 445
             ),
-            self.selected_option == 1
+            self.selected_option == 2
         )
