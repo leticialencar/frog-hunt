@@ -25,7 +25,7 @@ pygame.mixer.music.load(
     "assets/sounds/game_music.mp3"
 )
 
-pygame.mixer.music.set_volume(0.05)
+pygame.mixer.music.set_volume(0.5)
 
 
 main_menu = MainMenu(
