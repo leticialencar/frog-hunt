@@ -1,5 +1,7 @@
 import pygame
 
+from utils import resource_path
+
 from game import Game
 from end_game import EndGame
 from loading_screen import LoadingScreen
@@ -22,7 +24,7 @@ pygame.display.set_caption(
 clock = pygame.time.Clock()
 
 pygame.mixer.music.load(
-    "assets/sounds/game_music.mp3"
+    resource_path("assets/sounds/game_music.mp3")
 )
 
 pygame.mixer.music.set_volume(0.5)

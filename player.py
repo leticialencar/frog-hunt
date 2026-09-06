@@ -1,5 +1,5 @@
 import pygame
-
+from utils import resource_path
 
 class Player:
 
@@ -23,7 +23,7 @@ class Player:
         self.frame_duration = 150
 
         sprite_sheet = pygame.image.load(
-            "assets/player/bea_spritesheet.png"
+            resource_path("assets/player/bea_spritesheet.png")
         ).convert_alpha()
 
         frame_width = 200

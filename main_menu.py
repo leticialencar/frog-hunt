@@ -1,6 +1,7 @@
 import math
 import pygame
 
+from utils import resource_path
 
 class MainMenu:
 
@@ -10,7 +11,7 @@ class MainMenu:
         self.height = height
 
         self.background = pygame.image.load(
-            "assets/background/background.png"
+            resource_path("assets/background/background.png")
         ).convert()
 
         self.background = pygame.transform.scale(
@@ -19,17 +20,17 @@ class MainMenu:
         )
 
         self.font = pygame.font.Font(
-            "assets/fonts/Minecraftia-Regular.ttf",
+            resource_path("assets/fonts/Minecraftia-Regular.ttf"),
             16
         )
 
         self.small_font = pygame.font.Font(
-            "assets/fonts/Minecraftia-Regular.ttf",
+            resource_path("assets/fonts/Minecraftia-Regular.ttf"),
             12
         )
 
         self.logo = pygame.image.load(
-            "assets/ui/frog_hunt_logo.png"
+            resource_path("assets/ui/frog_hunt_logo.png")
         ).convert_alpha()
 
         logo_width = 350
@@ -48,7 +49,7 @@ class MainMenu:
         )
 
         self.button_sound = pygame.mixer.Sound(
-            "assets/sounds/button_click.wav"
+            resource_path("assets/sounds/button_click.wav")
         )
 
         self.button_sound.set_volume(0.7)

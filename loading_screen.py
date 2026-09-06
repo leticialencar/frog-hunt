@@ -1,6 +1,7 @@
 import pygame
 import random
 
+from utils import resource_path
 
 class LoadingScreen:
 
@@ -10,7 +11,7 @@ class LoadingScreen:
         self.height = height
 
         self.font_text = pygame.font.Font(
-            "assets/fonts/Minecraftia-Regular.ttf",
+            resource_path("assets/fonts/Minecraftia-Regular.ttf"),
             14
         )
 
@@ -65,7 +66,7 @@ class LoadingScreen:
     def load_frog(self):
 
         sprite_sheet = pygame.image.load(
-            "assets/frog/frog_spritesheet.png"
+            resource_path("assets/frog/frog_spritesheet.png")
         ).convert_alpha()
 
         walk_rects = [

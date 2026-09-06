@@ -1,6 +1,7 @@
 import math
 import pygame
 
+from utils import resource_path
 
 class EndGame:
 
@@ -19,49 +20,49 @@ class EndGame:
         self.game_time = game_time
 
         self.background = pygame.image.load(
-            "assets/background/background.png"
+            resource_path("assets/background/background.png")
         ).convert()
-
+        
         self.background = pygame.transform.scale(
             self.background,
             (self.width, self.height)
         )
 
         self.font = pygame.font.Font(
-            "assets/fonts/Minecraftia-Regular.ttf",
+            resource_path("assets/fonts/Minecraftia-Regular.ttf"),
             16
         )
 
         self.option_font = pygame.font.Font(
-            "assets/fonts/Minecraftia-Regular.ttf",
+            resource_path("assets/fonts/Minecraftia-Regular.ttf"),
             14
         )
 
         self.small_font = pygame.font.Font(
-            "assets/fonts/Minecraftia-Regular.ttf",
+            resource_path("assets/fonts/Minecraftia-Regular.ttf"),
             12
         )
 
         self.stats_font = pygame.font.Font(
-            "assets/fonts/Minecraftia-Regular.ttf",
+            resource_path("assets/fonts/Minecraftia-Regular.ttf"),
             14
         )
 
         self.title_font = pygame.font.Font(
-            "assets/fonts/Minecraftia-Regular.ttf",
+            resource_path("assets/fonts/Minecraftia-Regular.ttf"),
             24
         )
 
         if self.frogs_caught == 0:
 
             self.animation_sheet = pygame.image.load(
-                "assets/player/bea_sad.png"
+                resource_path("assets/player/bea_sad.png")
             ).convert_alpha()
 
         else:
 
             self.animation_sheet = pygame.image.load(
-                "assets/player/bea_celebrate.png"
+                resource_path("assets/player/bea_celebrate.png")
             ).convert_alpha()
 
         self.frame_width = (

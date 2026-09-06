@@ -1,6 +1,8 @@
 import pygame
 import random
 
+from utils import resource_path
+
 from player import Player
 from frog import Frog
 
@@ -13,7 +15,7 @@ class Game:
         self.height = height
 
         self.background = pygame.image.load(
-            "assets/background/background.png"
+            resource_path("assets/background/background.png")
         ).convert()
 
         self.background = pygame.transform.scale(
@@ -22,12 +24,12 @@ class Game:
         )
 
         self.font = pygame.font.Font(
-            "assets/fonts/Minecraftia-Regular.ttf",
+            resource_path("assets/fonts/Minecraftia-Regular.ttf"),
             12
         )
 
         self.frog_icon = pygame.image.load(
-            "assets/frog/frog_icon.png"
+            resource_path("assets/frog/frog_icon.png")
         ).convert_alpha()
 
         self.frog_icon = pygame.transform.scale(
@@ -36,7 +38,7 @@ class Game:
         )
 
         self.counter_background = pygame.image.load(
-            "assets/ui/frog_counter_bg.png"
+            resource_path("assets/ui/frog_counter_bg.png")
         ).convert_alpha()
 
         self.counter_background = pygame.transform.scale(

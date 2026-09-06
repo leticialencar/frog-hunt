@@ -1,6 +1,6 @@
 import pygame
 import random
-
+from utils import resource_path
 
 class Frog:
 
@@ -39,7 +39,7 @@ class Frog:
         self.action_frame_duration = 150
 
         self.sprite_sheet = pygame.image.load(
-            "assets/frog/frog_spritesheet.png"
+            resource_path("assets/frog/frog_spritesheet.png")
         ).convert_alpha()
 
         self.idle = []
